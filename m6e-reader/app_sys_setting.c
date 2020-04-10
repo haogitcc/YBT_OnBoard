@@ -10,7 +10,6 @@
 #include "ind_cfg.h"
 #include "ind_string.h"
 #include "mid_timer.h"
-#include "m6e_upgrade.h"
 
 
 #define CONFIG_LEN (32 * 1024)
@@ -32,14 +31,6 @@ struct SYS_SETTINGS {
 	int serverport;
 	char wifiname[STRING_LEN_64];
 	char wifipassword[STRING_LEN_64];
-	int region;
-	int readpower;
-	int writepower;
-	int blf;
-	int tari;
-	int session;
-	int targencoding;
-	int target;
 };
 
 static struct SYS_SETTINGS sysConfigs;
@@ -183,14 +174,6 @@ int sys_config_init(void)
     sys_cfg_inset_int("system.serverport", &sysConfigs.serverport);
 	sys_cfg_inset_string("system.wifiname", &sysConfigs.wifiname,STRING_LEN_64);
 	sys_cfg_inset_string("system.wifipassword", &sysConfigs.wifipassword,STRING_LEN_64);
-	sys_cfg_inset_int("system.region", &sysConfigs.region);
-	sys_cfg_inset_int("system.readpower", &sysConfigs.readpower);
-	sys_cfg_inset_int("system.writepower", &sysConfigs.writepower);
-	sys_cfg_inset_int("system.blf", &sysConfigs.blf);
-	sys_cfg_inset_int("system.tari", &sysConfigs.tari);
-	sys_cfg_inset_int("system.targencoding", &sysConfigs.targencoding);
-	sys_cfg_inset_int("system.target", &sysConfigs.target);
-	sys_cfg_inset_int("system.session", &sysConfigs.session);
     return 0;
 }
 
@@ -212,14 +195,6 @@ void sys_config_load(int reset)
     sysConfigs.serverport= 8090;
 	strcpy(sysConfigs.wifiname, "FUWIT");
 	strcpy(sysConfigs.wifipassword, "fuwit1234");
-	sysConfigs.region = 1;
-	sysConfigs.readpower = 3000;
-	sysConfigs.writepower = 3000;
-	sysConfigs.blf = 1;
-	sysConfigs.tari = 1;
-	sysConfigs.session = 0;
-	sysConfigs.targencoding = 1;
-	sysConfigs.target = 0;
 
     mid_mutex_unlock(g_mutex);
 
@@ -297,22 +272,6 @@ int sysSettingGetInt(const char* name, int* value, int searchFlag)
         *value = sysConfigs.nettype;
     else if (!strcmp(name, "serverport"))
         *value = sysConfigs.serverport;
-	else if (!strcmp(name, "region"))
-		*value = sysConfigs.region;
-	else if (!strcmp(name, "readpower"))
-		*value = sysConfigs.readpower;
-	else if (!strcmp(name, "writepower"))
-		*value = sysConfigs.writepower;
-	else if (!strcmp(name, "blf"))
-		*value = sysConfigs.blf;
-	else if (!strcmp(name, "tari"))
-		*value = sysConfigs.tari;
-	else if (!strcmp(name, "session"))
-		*value = sysConfigs.session;
-	else if (!strcmp(name, "targencoding"))
-		*value = sysConfigs.targencoding;
-	else if (!strcmp(name, "target"))
-		*value = sysConfigs.target;
     else
         printf("undefined parameter %s\n", name);
 	
@@ -386,31 +345,7 @@ int sysSettingSetInt(const char* name, const int value)
     } else if (!strcmp(name, "serverport")) {
         if(sysConfigs.serverport!= value) 
 			sysConfigs.serverport = value;
-	} else if (!strcmp(name, "region")) {
-		if(sysConfigs.region!= value) 
-			sysConfigs.region = value;
-	} else if (!strcmp(name, "readpower")) {
-		if(sysConfigs.readpower!= value) 
-			sysConfigs.readpower = value;
-	} else if (!strcmp(name, "writepower")) {
-		if(sysConfigs.writepower!= value) 
-			sysConfigs.writepower = value;
-	} else if (!strcmp(name, "blf")) {
-		if(sysConfigs.blf!= value) 
-			sysConfigs.blf = value;
-	} else if (!strcmp(name, "tari")) {
-		if(sysConfigs.tari!= value) 
-			sysConfigs.tari = value;
-	} else if (!strcmp(name, "session")) {
-		if(sysConfigs.session!= value) 
-			sysConfigs.session = value;
-	} else if (!strcmp(name, "target")) {
-		if(sysConfigs.target!= value) 
-			sysConfigs.target = value;
-	} else if (!strcmp(name, "targencoding")) {
-		if(sysConfigs.targencoding!= value) 
-			sysConfigs.targencoding = value;
-    } else {
+	}  else {
         printf("undefined parameter %s: %d\n", name, value);
         mid_mutex_unlock(g_mutex);
         return -1;
